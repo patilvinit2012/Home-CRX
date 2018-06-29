@@ -64,6 +64,7 @@
         	populateItems();
         	refreshNotes();
             initSettings(settingsObj);
+            regesterOnloadEvents();
         }
 
         function addNote(){
@@ -246,22 +247,22 @@
             var clsLst = ['list-group-item-success','list-group-item-danger','list-group-item-warning','list-group-item-info'];
             c.forEach(function(item,i){
             	i = (i > c.length-1) ? i - c.length-1 : i;
-            	var btnX = `<button onclick="deleteItem($(this),${NOTES})" class="btn btn-danger btn-xs del" style="float: right;" data-id="${item.id}">X</button>`;
-            	var markDoneBtn = `<button onclick="markNoteAs($(this),STATUS_NOTE_DONE)" class="btn btn-primary btn-xs" style="float: right;" data-id="${item.id}" data-toggle="tooltip" title="Mark as done">
+            	var btnX = `<button class="btn btn-danger btn-xs del" data-btnopt="btnX" style="float: right;" data-id="${item.id}">X</button>`;
+            	var markDoneBtn = `<button data-btnopt="markDoneBtn" class="btn btn-primary btn-xs" style="float: right;" data-id="${item.id}" data-toggle="tooltip" title="Mark as done">
             							<span style="margin:0px">
             								<i class="material-icons" style="font-size:14px;padding:0px;">done</i>
         								</span>
     								</button>`;
-            	var undoBtn = `<button onclick="markNoteAs($(this),STATUS_NOTE_NEW)" class="btn btn-warning btn-xs" style="float: right;" data-id="${item.id}" data-toggle="tooltip" title="Undo">
+            	var undoBtn = `<button data-btnopt="undoBtn" class="btn btn-warning btn-xs" style="float: right;" data-id="${item.id}" data-toggle="tooltip" title="Undo">
             						<span style="margin:0px">
             							<i class="material-icons" style="font-size:14px;padding:0px;">undo</i>
         							</span>
     							</button>`;
-            	var btnOpt = (isNoteNew(item)) ? markDoneBtn : undoBtn;
+            	var btnopt = (isNoteNew(item)) ? markDoneBtn : undoBtn;
 
             	var noteTemplate = `<li class="list-group-item ${clsLst[i]}" data-id="${item.id}">
 					                	<div class="d-flex w-100 justify-content-between">
-									      	<strong class="mb-1" onclick="editNote($(this));">${item.note} </strong>${btnOpt} ${btnX}
+									      	<strong class="mb-1" onclick="editNote($(this));">${item.note} </strong>${btnopt} ${btnX}
 									    </div>
 									    <em class="timestamp">${new Date(item.actionDt).toLocaleString('en-IN')}</em>  
 				                	</li>`;
@@ -274,9 +275,25 @@
             });
             contnr.html(liItems);
             doneContnr.html(doneLiItems);
+            attachEventListnersOnNoteBtns();
             if(animate){
             	$('#notesList li:last').hide().appendTo('#notesList').slideDown();	
             }
+        }
+
+        function attachEventListnersOnNoteBtns(){
+            const noteContainer = $('#notesList,#doneNotesList');
+            noteContainer.find('[data-btnopt]').each((i,obj) => {
+                var dataOpt = $(obj).data('btnopt');
+                switch(dataOpt){
+                    case 'btnX' : {
+                        $(obj).on('click',() => deleteItem($(obj),NOTES));
+                        console.log($(obj));
+                    }
+                    case 'markDoneBtn' : $(obj).on('click',() => markNoteAs($(obj),STATUS_NOTE_DONE));
+                    case 'undoBtn' : $(obj).on('click',() => markNoteAs($(obj),STATUS_NOTE_NEW));
+                }
+            })
         }
 
         function editNote(currObj){
@@ -331,4 +348,8 @@
         	addItemInLS(item,item.type);
         }
 
-    
+        function regesterOnloadEvents(){
+             $('#clearModalDataBtn').on('click',clearModalData);
+             $('#notesListBtn').on('click',() => $('#notesList .timestamp').toggle('slow'));
+             $('#doneNotesListBtn').on('click',() => $('#doneNotesList .timestamp').toggle('slow'));
+        }

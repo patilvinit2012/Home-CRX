@@ -95,7 +95,7 @@
 		        </div>
 		        <div class="modal-footer">
 		        	<button type="button" class="btn btn-primary" data-dismiss="modal" id="saveItem">Save changes</button>
-		        	<button onclick="clearModalData()" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Clear"><i class="material-icons" style="font-size:18px">clear_all</i></button>
+		        	<button id="clearModalDataBtn" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Clear"><i class="material-icons" style="font-size:18px">clear_all</i></button>
 		        </div>
 		      </div>
 		    </div>
@@ -111,12 +111,12 @@
 		<br>
 		<div class="row">
 			<div class="col-md-6"> 
-				<button class="btn mBot5" onclick="$('#notesList .timestamp').toggle('slow');">-</button>
+				<button class="btn mBot5" id="notesListBtn">-</button>
 				<ul id="notesList" class="list-group">
 				</ul>
 			</div>
 			<div class="col-md-6"> 
-				<button class="btn mBot5" onclick="$('#doneNotesList .timestamp').toggle('slow');">-</button>
+				<button class="btn mBot5" id="doneNotesListBtn">-</button>
 				<ul id="doneNotesList" class="list-group">
 				</ul>
 			</div>
